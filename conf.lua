@@ -6,7 +6,7 @@ t.accelerometerjoystick = false                                  -- Enable the a
 t.externalstorage = false                                        -- True to save files (and read from the save directory) in external storage on Android (boolean)
 t.gammacorrect = false                                           -- Enable gamma-correct rendering, when supported by the system (boolean)
 
-t.window.title = "LoveFilter"                 -- The window title (string)
+t.window.title = "PolyShape Cheater"                 -- The window title (string)
 t.window.icon = nil                                              -- Filepath to an image to use as the window's icon (string)
 t.window.width = 900                                             -- The window width (number)
 t.window.height = 800                                           -- The window height (number)

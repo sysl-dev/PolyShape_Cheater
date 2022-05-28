@@ -65,6 +65,8 @@ end
 love.graphics.setDefaultFilter( "nearest", "nearest")
 
 local lockmouse = false
+local mirrormodex = false
+local mirrormodey = false
 
 -- Load UI Because I'm LAZY
 local suit = require 'suit'
@@ -100,6 +102,12 @@ function love.update(dt)
     end
   end
 
+	if suit.Button("Mirror Mode X", {id=133111}, suit.layout:row()).hit then
+  mirrormodex = not mirrormodex
+	end
+	if suit.Button("Mirror Mode Y", {id=132111}, suit.layout:row()).hit then
+  mirrormodey = not mirrormodey
+	end
 	if suit.Button("Toggle Numbers", {id=1003111}, suit.layout:row()).hit then
  numbershow = not numbershow
 	end
@@ -119,7 +127,8 @@ function love.update(dt)
         (%d/MAXSIZE) * settings.w/2,   (%d/MAXSIZE) * settings.h/2,
         (%d/MAXSIZE) * settings.w/2,  (%d/MAXSIZE) * settings.h/2,
         (%d/MAXSIZE) * settings.w/2,  (%d/MAXSIZE) * settings.h/2
-      ),]]
+      ),
+      ]]
       bit = string.format(bit, unpack(triangles[i]))
       bit = string.gsub(bit, "MAXSIZE", MAXSIZE)
       str = str .. bit .. " "
@@ -203,6 +212,42 @@ function love.update(dt)
       end
     count = {} 
     mode = 0
+
+    if not remove and mirrormodex and not mirrormodey then 
+      local derp = {unpack(triangles[#triangles])}
+      for dd = 1, #derp, 2 do 
+        derp[dd] = derp[dd] * -1
+      end
+      triangles[#triangles + 1] = {unpack(derp)}
+    end
+
+    if not remove and mirrormodey and not mirrormodex then 
+      local derp = {unpack(triangles[#triangles])}
+      for dd = 2, #derp, 2 do 
+        derp[dd] = derp[dd] * -1
+      end
+      triangles[#triangles + 1] = {unpack(derp)}
+    end
+
+    if not remove and mirrormodey and mirrormodex then 
+      local derp = {unpack(triangles[#triangles])}
+      for dd = 1, #derp, 2 do 
+        derp[dd] = derp[dd] * -1
+      end
+      triangles[#triangles + 1] = {unpack(derp)}
+      local derp = {unpack(triangles[#triangles])}
+      for dd = 2, #derp, 2 do 
+        derp[dd] = derp[dd] * -1
+      end
+      triangles[#triangles + 1] = {unpack(derp)}
+    end
+    local derp = {unpack(triangles[#triangles])}
+    for dd = 1, #derp, 2 do 
+      derp[dd] = derp[dd] * -1
+    end
+    triangles[#triangles + 1] = {unpack(derp)}
+
+    remove = false
   end 
 
   delete_later()
@@ -226,17 +271,7 @@ function love.draw()
   love.graphics.rectangle("fill", 0+ 15 * 30 , 0 , 1, 600)
   love.graphics.setColor(0,1,0,1)
 
-  for y = 0, 20 do 
-    for x = 0, 20 do 
-      love.graphics.setColor(0,1,0,1)
 
-      if check(x * 30 - 2, y * 30 - 2, 5, 5, love.mouse.getX(), love.mouse.getY(), 3, 3) then 
-        love.graphics.setColor(1,0,0,1)
-      end
-
-      love.graphics.rectangle("fill", x * 30 - 2, y * 30 - 2, 5, 5)
-    end
-  end
 
   
   for i=1, #triangles do 
@@ -266,10 +301,21 @@ function love.draw()
   end
   love.graphics.setColor(1,1,1,1)
 
+  love.graphics.setColor(1,1,1,1)
+  for y = 0, 20 do 
+    for x = 0, 20 do 
+      love.graphics.setColor(0,1,0,1)
+      if check(x * 30 - 2, y * 30 - 2, 5, 5, love.mouse.getX(), love.mouse.getY(), 3, 3) then 
+        love.graphics.setColor(1,0,0,1)
+      end
+      love.graphics.rectangle("fill", x * 30 - 2, y * 30 - 2, 5, 5)
+    end
+  end
+  love.graphics.setColor(1,1,1,1)
 
 --	
   suit.draw()
-  love.graphics.print("X: " .. love.mouse.getX() .. " Y: " .. love.mouse.getY() .. " Mode: " .. mode .. " Count: " .. #count, 10, 750)
+  love.graphics.print("X: " .. love.mouse.getX() .. " Y: " .. love.mouse.getY() .. " Mode: " .. mode .. " Count: " .. #count .. " Mirror Mode X: " .. tostring(mirrormodex) .. " Mirror Mode Y: " .. tostring(mirrormodey), 10, 750)
   love.graphics.print("Last Message: " .. tostring(printqueue), 10, 780)
   for i=1, #count do
     love.graphics.print("Count " .. i .. count[i][1] .. ", " .. count[i][2], 810, 10 + 10 * (i-1))
