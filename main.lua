@@ -240,12 +240,13 @@ function love.update(dt)
         derp[dd] = derp[dd] * -1
       end
       triangles[#triangles + 1] = {unpack(derp)}
+      local derp = {unpack(triangles[#triangles])}
+      for dd = 1, #derp, 2 do 
+        derp[dd] = derp[dd] * -1
+      end
+      triangles[#triangles + 1] = {unpack(derp)}
     end
-    local derp = {unpack(triangles[#triangles])}
-    for dd = 1, #derp, 2 do 
-      derp[dd] = derp[dd] * -1
-    end
-    triangles[#triangles + 1] = {unpack(derp)}
+
 
     remove = false
   end 
